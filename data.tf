@@ -8,7 +8,7 @@ data "aws_vpcs" "all" {
 
 locals {
   vpc_exists = length(data.aws_vpcs.all.ids) > 0
-  vpc_id = local.vpc_exists ? tolist(data.aws_vpcs.all.ids)[0] : ""
+  vpc_id     = local.vpc_exists ? tolist(data.aws_vpcs.all.ids)[0] : ""
 }
 
 # Busca detalhes da VPC se existir
@@ -20,12 +20,12 @@ data "aws_vpc" "existing" {
 # Verifica se as subnets existem
 data "aws_subnets" "private" {
   count = local.vpc_exists ? 1 : 0
-  
+
   filter {
     name   = "vpc-id"
     values = [local.vpc_id]
   }
-  
+
   filter {
     name   = "tag:Name"
     values = ["${var.project_name}-private-subnet-*"]
@@ -35,12 +35,12 @@ data "aws_subnets" "private" {
 # Verifica se o security group existe
 data "aws_security_groups" "rds" {
   count = local.vpc_exists ? 1 : 0
-  
+
   filter {
     name   = "vpc-id"
     values = [local.vpc_id]
   }
-  
+
   filter {
     name   = "tag:Name"
     values = ["${var.project_name}-rds-security-group"]
@@ -49,7 +49,7 @@ data "aws_security_groups" "rds" {
 
 locals {
   sg_exists = local.vpc_exists && length(data.aws_security_groups.rds) > 0 && length(data.aws_security_groups.rds[0].ids) > 0
-  sg_id = local.sg_exists ? tolist(data.aws_security_groups.rds[0].ids)[0] : ""
+  sg_id     = local.sg_exists ? tolist(data.aws_security_groups.rds[0].ids)[0] : ""
 }
 
 # Busca detalhes do security group se existir

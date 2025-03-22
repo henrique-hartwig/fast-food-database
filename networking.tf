@@ -22,7 +22,7 @@ locals {
 
 resource "aws_subnet" "private_subnet" {
   count = 2
-  
+
   vpc_id                  = local.vpc_id_to_use
   cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
@@ -43,7 +43,7 @@ resource "aws_subnet" "private_subnet" {
 
 data "aws_internet_gateway" "existing" {
   count = local.vpc_exists ? 1 : 0
-  
+
   filter {
     name   = "attachment.vpc-id"
     values = [local.vpc_id]
@@ -64,9 +64,9 @@ resource "aws_internet_gateway" "gw" {
 
 data "aws_route_tables" "existing" {
   count = local.vpc_exists ? 1 : 0
-  
+
   vpc_id = local.vpc_id
-  
+
   filter {
     name   = "tag:Name"
     values = ["${var.project_name}-private-route-table"]
