@@ -8,7 +8,15 @@ on:
     paths:
       - '**.tf'
       - '**.tfvars'
-      - '.github/workflows/terraform-deploy.yml'
+      - '.github/workflows/pipeline.yml'
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.github/workflows/pipeline.yml'
 
 env:
   AWS_REGION: us-east-1
@@ -94,5 +102,5 @@ jobs:
       run: exit 1
 
     - name: Terraform Apply
-      if: github.event.pull_request.merged == true
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: terraform apply -auto-approve tfplan
