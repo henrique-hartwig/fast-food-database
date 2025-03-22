@@ -50,5 +50,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 }
 
 locals {
-  subnet_group_name_to_use = local.subnet_group_exists ? "${var.project_name}-rds-subnet-group" : (length(aws_db_subnet_group.rds_subnet_group) > 0 ? aws_db_subnet_group.rds_subnet_group[0].name : null)
+  subnet_group_name_to_use = local.subnet_group_exists ? 
+    "${var.project_name}-rds-subnet-group" : 
+    (length(aws_db_subnet_group.rds_subnet_group) > 0 ? aws_db_subnet_group.rds_subnet_group[0].name : null)
 }

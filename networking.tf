@@ -44,7 +44,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-data "aws_internet_gateways" "existing" {
+data "aws_internet_gateway" "existing" {
   count = local.vpc_exists ? 1 : 0
   
   filter {
@@ -54,7 +54,7 @@ data "aws_internet_gateways" "existing" {
 }
 
 locals {
-  igw_exists = local.vpc_exists && length(data.aws_internet_gateways.existing) > 0 && length(data.aws_internet_gateways.existing[0].ids) > 0
+  igw_exists = local.vpc_exists && length(data.aws_internet_gateway.existing) > 0
 }
 
 resource "aws_internet_gateway" "gw" {
