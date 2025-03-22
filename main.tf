@@ -10,7 +10,7 @@ resource "aws_db_instance" "postgres" {
   password               = var.db_password
   port                   = var.db_port
   multi_az               = var.db_multi_az
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  vpc_security_group_ids = [local.sg_id_to_use]
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   publicly_accessible    = false
   skip_final_snapshot    = true
