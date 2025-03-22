@@ -12,7 +12,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  TF_WORKSPACE: production
   PROJECT_NAME: fastfood
   DB_USERNAME: postgres
   DB_PORT: 5432
