@@ -12,7 +12,10 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  TF_WORKSPACE: production
+  PROJECT_NAME: fastfood
+  DB_USERNAME: postgres
+  DB_PORT: 5432
+  DB_NAME: fastfood
 
 jobs:
   terraform:
@@ -38,6 +41,15 @@ jobs:
       with:
         terraform_version: "1.7.0"
 
+    - name: Setup Environment Variables
+      env:
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        echo "TF_VAR_db_username=${{ env.DB_USERNAME }}" >> $GITHUB_ENV
+        echo "TF_VAR_db_password=$DB_PASSWORD" >> $GITHUB_ENV
+        echo "TF_VAR_db_port=${{ env.DB_PORT }}" >> $GITHUB_ENV
+        echo "TF_VAR_db_name=${{ env.DB_NAME }}" >> $GITHUB_ENV
+
     - name: Terraform Init
       id: init
       run: terraform init
@@ -49,10 +61,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: |
-        terraform plan -no-color -input=false \
-        -var="db_password=${{ secrets.DB_PASSWORD }}" \
-        -out=tfplan
+      run: terraform plan -no-color -input=false -out=tfplan
       continue-on-error: true
 
     - name: Update Pull Request
