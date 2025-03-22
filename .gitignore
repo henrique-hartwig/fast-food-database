@@ -11,3 +11,6 @@
 
 # Outros
 *.log
+
+# Env
+.env
