@@ -3,6 +3,14 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      tags,
+      cidr_block
+    ]
+  }
+
   tags = {
     Name = "${var.project_name}-vpc"
   }
@@ -14,6 +22,14 @@ resource "aws_subnet" "private_subnet" {
   cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = false
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      tags,
+      cidr_block
+    ]
+  }
 
   tags = {
     Name = "${var.project_name}-private-subnet-${count.index + 1}"
