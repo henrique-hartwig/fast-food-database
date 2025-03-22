@@ -1,5 +1,7 @@
 resource "aws_security_group" "rds_sg" {
-  vpc_id = aws_vpc.main.id
+  count = length(data.aws_security_group.rds) > 0 ? 0 : 1
+  
+  vpc_id = length(data.aws_vpc.existing) > 0 ? data.aws_vpc.existing.id : aws_vpc.main[0].id
 
   ingress {
     from_port   = var.db_port
