@@ -8,7 +8,7 @@ on:
     paths:
       - '**.tf'
       - '**.tfvars'
-      - '.github/workflows/terraform-deploy.yml'
+      - '.github/workflows/pipeline.yml'
   push:
     branches:
       - master
@@ -16,7 +16,7 @@ on:
     paths:
       - '**.tf'
       - '**.tfvars'
-      - '.github/workflows/terraform-deploy.yml'
+      - '.github/workflows/pipeline.yml'
 
 env:
   AWS_REGION: us-east-1
