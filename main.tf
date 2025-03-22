@@ -20,8 +20,8 @@ resource "aws_db_instance" "postgres" {
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "${var.project_name}-rds-subnet-group"
-  subnet_ids = aws_subnet.private_subnet[*].id
+  name_prefix = "${var.project_name}-rds-subnet-"
+  subnet_ids  = aws_subnet.private_subnet[*].id
 
   tags = {
     Name = "${var.project_name}-rds-subnet-group"
