@@ -10,3 +10,6 @@ variable "db_engine_version" {}
 variable "db_port" {}
 variable "db_multi_az" {}
 variable "aws_region" {}
+variable "project_name" {
+  default = "fastfood"
+}

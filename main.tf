@@ -1,5 +1,5 @@
 resource "aws_db_instance" "postgres" {
-  identifier             = "fastfood-db"
+  identifier             = "${var.project_name}-db"
   allocated_storage      = var.db_storage
   storage_type           = "gp2"
   engine                 = var.db_engine
@@ -15,15 +15,15 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible    = false
   skip_final_snapshot    = true
   tags = {
-    Name = "fastfood-db"
+    Name = "${var.project_name}-db"
   }
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "fastfood-rds-subnet-group"
+  name       = "${var.project_name}-rds-subnet-group"
   subnet_ids = aws_subnet.private_subnet[*].id
 
   tags = {
-    Name = "fastfood-rds-subnet-group"
+    Name = "${var.project_name}-rds-subnet-group"
   }
 }

@@ -4,7 +4,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "fastfood-vpc"
+    Name = "${var.project_name}-vpc"
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "fastfood-private-subnet-${count.index + 1}"
+    Name = "${var.project_name}-private-subnet-${count.index + 1}"
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "fastfood-gateway"
+    Name = "${var.project_name}-gateway"
   }
 }
 
@@ -32,6 +32,6 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "fastfood-private-route-table"
+    Name = "${var.project_name}-private-route-table"
   }
 }

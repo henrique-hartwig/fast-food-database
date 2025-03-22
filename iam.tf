@@ -1,5 +1,5 @@
 resource "aws_iam_role" "rds_access_role" {
-  name = "fastfood-rds-access-role"
+  name = "${var.project_name}-rds-access-role"
 
   assume_role_policy = <<EOF
 {
@@ -18,8 +18,8 @@ EOF
 }
 
 resource "aws_iam_policy" "rds_read_write_policy" {
-  name        = "fastfood-rds-read-write-policy"
-  description = "Permite leitura e escrita no banco RDS"
+  name        = "${var.project_name}-rds-read-write-policy"
+  description = "Allow read and write to RDS"
 
   policy = <<EOF
 {
