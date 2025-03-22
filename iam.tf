@@ -1,5 +1,5 @@
 resource "aws_iam_role" "rds_access_role" {
-  name = "${var.project_name}-rds-access-role"
+  name_prefix           = "${var.project_name}-rds-access-"
   force_detach_policies = true
 
   assume_role_policy = <<EOF
@@ -19,7 +19,7 @@ EOF
 }
 
 resource "aws_iam_policy" "rds_read_write_policy" {
-  name        = "${var.project_name}-rds-read-write-policy"
+  name_prefix = "${var.project_name}-rds-read-write-"
   description = "Allow read and write to RDS"
 
   policy = <<EOF
