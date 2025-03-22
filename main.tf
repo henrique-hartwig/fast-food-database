@@ -1,6 +1,4 @@
 resource "aws_db_instance" "postgres" {
-  count = local.db_exists ? 0 : 1
-  
   identifier             = "${var.project_name}-db"
   allocated_storage      = var.db_storage
   storage_type           = "gp2"
@@ -13,7 +11,7 @@ resource "aws_db_instance" "postgres" {
   port                   = var.db_port
   multi_az               = var.db_multi_az
   vpc_security_group_ids = [local.sg_id_to_use]
-  db_subnet_group_name   = local.subnet_group_name_to_use
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   publicly_accessible    = false
   skip_final_snapshot    = true
 
@@ -39,18 +37,10 @@ resource "aws_db_instance" "postgres" {
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  count = local.subnet_group_exists ? 0 : 1
-  
   name_prefix = "${var.project_name}-rds-subnet-"
-  subnet_ids  = length(local.subnet_ids) > 0 ? local.subnet_ids : aws_subnet.private_subnet[*].id
+  subnet_ids  = aws_subnet.private_subnet[*].id
 
   tags = {
     Name = "${var.project_name}-rds-subnet-group"
   }
-}
-
-locals {
-  subnet_group_name_to_use = local.subnet_group_exists ? 
-    "${var.project_name}-rds-subnet-group" : 
-    (length(aws_db_subnet_group.rds_subnet_group) > 0 ? aws_db_subnet_group.rds_subnet_group[0].name : null)
 }

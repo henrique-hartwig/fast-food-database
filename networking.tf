@@ -1,6 +1,4 @@
 resource "aws_vpc" "main" {
-  count = local.vpc_exists ? 0 : 1
-  
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -19,12 +17,11 @@ resource "aws_vpc" "main" {
 }
 
 locals {
-  vpc_id_to_use = local.vpc_exists ? local.vpc_id : (length(aws_vpc.main) > 0 ? aws_vpc.main[0].id : null)
-  subnet_ids = local.vpc_exists && length(data.aws_subnets.private) > 0 ? data.aws_subnets.private[0].ids : []
+  vpc_id_to_use = aws_vpc.main.id
 }
 
 resource "aws_subnet" "private_subnet" {
-  count = length(local.subnet_ids) > 0 ? 0 : 2
+  count = 2
   
   vpc_id                  = local.vpc_id_to_use
   cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
@@ -58,8 +55,6 @@ locals {
 }
 
 resource "aws_internet_gateway" "gw" {
-  count = local.igw_exists ? 0 : 1
-  
   vpc_id = local.vpc_id_to_use
 
   tags = {
@@ -83,8 +78,6 @@ locals {
 }
 
 resource "aws_route_table" "private" {
-  count = local.route_table_exists ? 0 : 1
-  
   vpc_id = local.vpc_id_to_use
 
   tags = {

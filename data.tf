@@ -60,7 +60,7 @@ data "aws_security_group" "rds" {
 
 # Verifica se o DB subnet group existe
 data "aws_db_subnet_group" "existing" {
-  count = 0
+  count = 1
   name  = "${var.project_name}-rds-subnet-group"
 }
 

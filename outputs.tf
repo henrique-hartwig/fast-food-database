@@ -1,9 +1,9 @@
 output "db_endpoint" {
-  value = local.db_exists ? data.aws_db_instance.existing[0].endpoint : (length(aws_db_instance.postgres) > 0 ? aws_db_instance.postgres[0].endpoint : null)
+  value = aws_db_instance.postgres.endpoint
 }
 
 output "db_port" {
-  value = local.db_exists ? data.aws_db_instance.existing[0].port : (length(aws_db_instance.postgres) > 0 ? aws_db_instance.postgres[0].port : null)
+  value = aws_db_instance.postgres.port
 }
 
 output "rds_security_group_id" {
@@ -11,5 +11,5 @@ output "rds_security_group_id" {
 }
 
 output "vpc_id" {
-  value = local.vpc_id_to_use
+  value = aws_vpc.main.id
 }
