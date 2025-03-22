@@ -1,6 +1,5 @@
-# Cria a VPC apenas se não existir
 resource "aws_vpc" "main" {
-  count = length(data.aws_vpc.existing) > 0 ? 0 : 1
+  count = local.vpc_exists ? 0 : 1
   
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -19,11 +18,15 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Cria as subnets apenas se não existirem
+locals {
+  vpc_id_to_use = local.vpc_exists ? local.vpc_id : (length(aws_vpc.main) > 0 ? aws_vpc.main[0].id : null)
+  subnet_ids = local.vpc_exists && length(data.aws_subnets.private) > 0 ? data.aws_subnets.private[0].ids : []
+}
+
 resource "aws_subnet" "private_subnet" {
-  count = length(data.aws_subnets.private.ids) > 0 ? 0 : 2
+  count = length(local.subnet_ids) > 0 ? 0 : 2
   
-  vpc_id                  = length(data.aws_vpc.existing) > 0 ? data.aws_vpc.existing.id : aws_vpc.main[0].id
+  vpc_id                  = local.vpc_id_to_use
   cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = false
@@ -41,20 +44,48 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-resource "aws_internet_gateway" "gw" {
-  count = length(data.aws_vpc.existing) > 0 ? 0 : 1
+data "aws_internet_gateways" "existing" {
+  count = local.vpc_exists ? 1 : 0
   
-  vpc_id = length(data.aws_vpc.existing) > 0 ? data.aws_vpc.existing.id : aws_vpc.main[0].id
+  filter {
+    name   = "attachment.vpc-id"
+    values = [local.vpc_id]
+  }
+}
+
+locals {
+  igw_exists = local.vpc_exists && length(data.aws_internet_gateways.existing) > 0 && length(data.aws_internet_gateways.existing[0].ids) > 0
+}
+
+resource "aws_internet_gateway" "gw" {
+  count = local.igw_exists ? 0 : 1
+  
+  vpc_id = local.vpc_id_to_use
 
   tags = {
     Name = "${var.project_name}-gateway"
   }
 }
 
-resource "aws_route_table" "private" {
-  count = length(data.aws_vpc.existing) > 0 ? 0 : 1
+data "aws_route_tables" "existing" {
+  count = local.vpc_exists ? 1 : 0
   
-  vpc_id = length(data.aws_vpc.existing) > 0 ? data.aws_vpc.existing.id : aws_vpc.main[0].id
+  vpc_id = local.vpc_id
+  
+  filter {
+    name   = "tag:Name"
+    values = ["${var.project_name}-private-route-table"]
+  }
+}
+
+locals {
+  route_table_exists = local.vpc_exists && length(data.aws_route_tables.existing) > 0 && length(data.aws_route_tables.existing[0].ids) > 0
+}
+
+resource "aws_route_table" "private" {
+  count = local.route_table_exists ? 0 : 1
+  
+  vpc_id = local.vpc_id_to_use
 
   tags = {
     Name = "${var.project_name}-private-route-table"

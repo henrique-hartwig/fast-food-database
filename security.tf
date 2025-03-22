@@ -1,7 +1,7 @@
 resource "aws_security_group" "rds_sg" {
-  count = length(data.aws_security_group.rds) > 0 ? 0 : 1
+  count = local.sg_exists ? 0 : 1
   
-  vpc_id = length(data.aws_vpc.existing) > 0 ? data.aws_vpc.existing.id : aws_vpc.main[0].id
+  vpc_id = local.vpc_id_to_use
 
   ingress {
     from_port   = var.db_port
@@ -20,4 +20,8 @@ resource "aws_security_group" "rds_sg" {
   tags = {
     Name = "${var.project_name}-rds-security-group"
   }
+}
+
+locals {
+  sg_id_to_use = local.sg_exists ? local.sg_id : (length(aws_security_group.rds_sg) > 0 ? aws_security_group.rds_sg[0].id : null)
 }
