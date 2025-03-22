@@ -14,6 +14,14 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   publicly_accessible    = false
   skip_final_snapshot    = true
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      identifier
+    ]
+  }
+
   tags = {
     Name = "${var.project_name}-db"
   }
