@@ -12,7 +12,7 @@ resource "aws_db_instance" "postgres" {
   multi_az               = var.db_multi_az
   vpc_security_group_ids = [local.sg_id_to_use]
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
-  publicly_accessible    = false
+  publicly_accessible    = true
   skip_final_snapshot    = true
 
   lifecycle {
@@ -38,7 +38,7 @@ resource "aws_db_instance" "postgres" {
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name_prefix = "${var.project_name}-rds-subnet-"
-  subnet_ids  = aws_subnet.private_subnet[*].id
+  subnet_ids  = concat(aws_subnet.private_subnet[*].id, aws_subnet.public_subnet[*].id)
 
   tags = {
     Name = "${var.project_name}-rds-subnet-group"
