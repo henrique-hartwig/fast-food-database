@@ -41,6 +41,19 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
+resource "aws_subnet" "public_subnet" {
+  count = 2
+
+  vpc_id                  = local.vpc_id_to_use
+  cidr_block              = element(["10.0.3.0/24", "10.0.4.0/24"], count.index)
+  availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.project_name}-public-subnet-${count.index + 1}"
+  }
+}
+
 data "aws_internet_gateway" "existing" {
   count = local.vpc_exists ? 1 : 0
 
@@ -83,4 +96,23 @@ resource "aws_route_table" "private" {
   tags = {
     Name = "${var.project_name}-private-route-table"
   }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = local.vpc_id_to_use
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  tags = {
+    Name = "${var.project_name}-public-route-table"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count = 2
+  subnet_id      = aws_subnet.public_subnet[count.index].id
+  route_table_id = aws_route_table.public.id
 }
