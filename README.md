@@ -1,6 +1,6 @@
-# Project DynamoDB with Terraform
+# Project RDS and PostgreSQL with Terraform
 
-This project contains the infrastructure as code to create DynamoDB tables in AWS using Terraform.
+This project contains the infrastructure as code to create RDS and PostgreSQL in AWS using Terraform.
 
 ## Prerequisites
 
@@ -11,24 +11,17 @@ This project contains the infrastructure as code to create DynamoDB tables in AW
 ## How to use
 
 1. Clone the repository
-2. Enter the terraform directory:
-   ```bash
-   cd terraform
-   ```
-3. Initialize Terraform:
-   ```bash
-   terraform init
-   ```
-4. Check the execution plan:
-   ```bash
-   terraform plan
-   ```
-5. Apply the changes:
-   ```bash
-   terraform apply
-   ```
+2. Initialize Terraform:
+```bash
+terraform init
+```
+3. Check the execution plan:
+```bash
+terraform plan
+```
+4. Apply the changes:
+```bash
+terraform apply
+```
 
-## Tables structure
-
-### Users table
-- Primary key: cpf (String)
+The database is the same as previous project, tech challenge 2, but this time it is using RDS and PostgreSQL. The output of deployment is the endpoint to acces the database and will be used on repo [fast-food-kubernetes](https://github.com/henrique-hartwig/fast-food-kubernetes) to generate the kubernetes cloud image.
