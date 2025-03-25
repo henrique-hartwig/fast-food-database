@@ -17,6 +17,7 @@ env:
   DB_PORT: 5432
   DB_NAME: fastfood
   TF_WORKSPACE: production
+
 jobs:
   terraform:
     name: 'Terraform'
@@ -52,7 +53,14 @@ jobs:
 
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: |
+        cat <<EOF > backend.conf
+        bucket="fastfood-db-terraform-state"
+        key="infra/state.tfstate"
+        region="us-east-1"
+        EOF
+
+        terraform init -backend-config=backend.conf
 
     - name: Terraform Format
       id: fmt

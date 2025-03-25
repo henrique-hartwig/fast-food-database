@@ -16,7 +16,8 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot    = true
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy       = true
+    create_before_destroy = false
     ignore_changes = [
       identifier,
       username,
