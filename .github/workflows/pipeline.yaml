@@ -55,7 +55,7 @@ jobs:
       run: |
         cat <<EOF > backend.conf
         bucket="fastfood-db-terraform-state"
-        key="infra/state.tfstate"
+        key="database/state.tfstate"
         region="us-east-1"
         EOF
 
