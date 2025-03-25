@@ -7,9 +7,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "fastfood-db-terraform-state"
-    key            = "infra/state.tfstate"
-    region         = "us-east-1"
+    bucket = "fastfood-db-terraform-state"
+    key    = "infra/state.tfstate"
+    region = "us-east-1"
   }
 
 }
